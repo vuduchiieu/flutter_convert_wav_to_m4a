@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Demonstrates how to use the flutter_convert_wav_to_m4a plugin.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="flutter_convert_wav_to_m4a_example">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>flutter_convert_wav_to_m4a_example</title>
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script>
+
+  <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+  <script>
+    console.log('DOMContentLoaded');
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.FFmpeg) {
+        window.convertWavToM4a = async function (wavBytesBase64, inputFileName = 'input.wav') {
+          const { createFFmpeg, fetchFile } = FFmpeg;
+          if (!ffmpeg) {
+            ffmpeg = createFFmpeg({ log: true });
+            await ffmpeg.load();
+          }
+
+          const wavBytes = Uint8Array.from(atob(wavBytesBase64), c => c.charCodeAt(0));
+
+          ffmpeg.FS('writeFile', inputFileName, wavBytes);
+
+          const outputFileName = inputFileName.replace(/\.\w+$/, '.m4a');
+
+          await ffmpeg.run('-i', inputFileName, '-c:a', 'aac', '-b:a', '128k', outputFileName);
+
+          const m4aBytes = ffmpeg.FS('readFile', outputFileName);
+
+          return btoa(String.fromCharCode(...m4aBytes));
+        };
+
+      }
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+
+</html>

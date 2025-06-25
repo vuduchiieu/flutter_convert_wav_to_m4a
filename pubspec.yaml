@@ -1,0 +1,29 @@
+name: flutter_convert_wav_to_m4a
+description: "A new Flutter plugin project."
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.6.1
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  web: ^0.5.1
+  plugin_platform_interface: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      web:
+        pluginClass: FlutterConvertWavToM4aWeb
+        fileName: flutter_convert_wav_to_m4a_web.dart
+#flutter pub publish

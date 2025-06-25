@@ -26,7 +26,8 @@ class FlutterConvertWavToM4a {
   Future<void> _init() async {
     final completer = Completer<void>();
     final coiScript = ScriptElement()
-      ..src = 'coi-serviceworker.min.js'
+      ..src =
+          'https://cdn.jsdelivr.net/gh/vuduchiieu/flutter_convert_wav_to_m4a@main/coi-serviceworker.min.js'
       ..type = 'application/javascript';
 
     document.body?.append(coiScript);

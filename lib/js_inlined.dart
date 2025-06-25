@@ -1,6 +1,5 @@
 const String ffmpegJsCode = r"""
-if (typeof window.ffmpegInstance === "undefined") {
-  let ffmpeg;
+ let ffmpeg;
 
   window.convertWavToM4a = async function (
     wavBytesBase64,
@@ -8,6 +7,8 @@ if (typeof window.ffmpegInstance === "undefined") {
     callback
   ) {
     try {
+   console.log('Base64 length:', wavBytesBase64.length);
+
       if (!window.FFmpeg) {
         throw new Error("FFmpeg not loaded");
       }
@@ -15,7 +16,7 @@ if (typeof window.ffmpegInstance === "undefined") {
       const { createFFmpeg, fetchFile } = FFmpeg;
 
       if (!ffmpeg) {
-        ffmpeg = createFFmpeg({ log: true });
+        ffmpeg = createFFmpeg({ log: false });
       }
 
       if (!ffmpeg.isLoaded()) {
@@ -32,7 +33,6 @@ if (typeof window.ffmpegInstance === "undefined") {
         c.charCodeAt(0)
       );
 
-
       ffmpeg.FS("writeFile", inputFileName, wavBytes);
 
       const outputFileName = inputFileName.replace(/\.\w+$/, ".m4a");
@@ -47,24 +47,17 @@ if (typeof window.ffmpegInstance === "undefined") {
         outputFileName
       );
 
-      console.log("6");
-
       const m4aBytes = ffmpeg.FS("readFile", outputFileName);
 
-      console.log("7");
-
-      const m4aBase64 = btoa(String.fromCharCode(...m4aBytes));
-
-      console.log("8");
-
+const m4aBase64 = btoa(
+  Array.from(m4aBytes)
+    .map((b) => String.fromCharCode(b))
+    .join("")
+);
       callback(m4aBase64);
     } catch (error) {
       console.log("catch error", error);
-
       callback(null);
     }
   };
-}
-
-
 """;

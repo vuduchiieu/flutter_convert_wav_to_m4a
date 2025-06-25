@@ -23,17 +23,30 @@ class FlutterConvertWavToM4a {
     return _instance!;
   }
 
+  void registerServiceWorker() {
+    if (js.context.hasProperty('navigator')) {
+      final navigator = js.context['navigator'];
+      if (navigator.hasProperty('serviceWorker')) {
+        navigator['serviceWorker']
+            .callMethod('register', ['/coi-serviceworker.min.js']);
+      }
+    }
+  }
+
   Future<void> _init() async {
     final completer = Completer<void>();
-    final coiScript = ScriptElement()
-      ..src =
-          'https://cdn.jsdelivr.net/gh/vuduchiieu/flutter_convert_wav_to_m4a@main/coi-serviceworker.min.js'
-      ..type = 'application/javascript';
+    // final metaOpener = MetaElement()
+    //   ..httpEquiv = "Cross-Origin-Opener-Policy"
+    //   ..content = "same-origin";
 
-    print('coiScript');
+    // final metaEmbedder = MetaElement()
+    //   ..httpEquiv = "Cross-Origin-Embedder-Policy"
+    //   ..content = "require-corp";
 
-    document.body?.append(coiScript);
+    // document.head?.append(metaOpener);
+    // document.head?.append(metaEmbedder);
 
+    // registerServiceWorker();
     final ffmpegScript = ScriptElement()
       ..src = "https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"
       ..type = "application/javascript"

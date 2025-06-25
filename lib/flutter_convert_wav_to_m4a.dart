@@ -25,6 +25,12 @@ class FlutterConvertWavToM4a {
 
   Future<void> _init() async {
     final completer = Completer<void>();
+    final coiScript = ScriptElement()
+      ..src = 'coi-serviceworker.min.js'
+      ..type = 'application/javascript';
+
+    document.body?.append(coiScript);
+
     final ffmpegScript = ScriptElement()
       ..src = "https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"
       ..type = "application/javascript"

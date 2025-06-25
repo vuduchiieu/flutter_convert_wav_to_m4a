@@ -30,6 +30,8 @@ class FlutterConvertWavToM4a {
           'https://cdn.jsdelivr.net/gh/vuduchiieu/flutter_convert_wav_to_m4a@main/coi-serviceworker.min.js'
       ..type = 'application/javascript';
 
+    print('coiScript');
+
     document.body?.append(coiScript);
 
     final ffmpegScript = ScriptElement()

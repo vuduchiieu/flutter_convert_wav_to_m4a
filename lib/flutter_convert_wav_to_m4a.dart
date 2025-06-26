@@ -23,35 +23,20 @@ class FlutterConvertWavToM4a {
     return _instance!;
   }
 
-  void registerServiceWorker() {
-    if (js.context.hasProperty('navigator')) {
-      final navigator = js.context['navigator'];
-      if (navigator.hasProperty('serviceWorker')) {
-        navigator['serviceWorker']
-            .callMethod('register', ['/coi-serviceworker.min.js']);
-      }
-    }
-  }
-
   Future<void> _init() async {
     final completer = Completer<void>();
 
-    // final initCOEPServiceWorkerScript = ScriptElement()
-    //   ..type = 'application/javascript'
-    //   ..text = JsInlined.initCOEPJsCode;
-    // document.body?.append(initCOEPServiceWorkerScript);
+    //   final registerSwScript = ScriptElement()
+    //     ..type = 'application/javascript'
+    //     ..text = '''
+    //    navigator.serviceWorker.register("https://raw.githubusercontent.com/vuduchiieu/flutter_convert_wav_to_m4a/main/coi-serviceworker.js").then((reg) => {
+    //     console.log("✅ SW registered from file!", reg.scope);
+    //   }).catch((err) => {
+    //     console.error("❌ SW register from file failed:", err);
+    //   });
+    // ''';
 
-    final registerSwScript = ScriptElement()
-      ..type = 'application/javascript'
-      ..text = '''
-     navigator.serviceWorker.register("/coi-serviceworker.js").then((reg) => {
-      console.log("✅ SW registered from file!", reg.scope);
-    }).catch((err) => {
-      console.error("❌ SW register from file failed:", err);
-    });
-  ''';
-
-    document.body?.append(registerSwScript);
+    //   document.body?.append(registerSwScript);
 
     final ffmpegScript = ScriptElement()
       ..src = "https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"
@@ -71,6 +56,47 @@ class FlutterConvertWavToM4a {
       ..text = JsInlined.ffmpegJsCode;
 
     document.body?.append(converterScript);
+
+    //   final registerSwScript = ScriptElement()
+    //     ..type = 'application/javascript'
+    //     ..text = '''
+    //   (async () => {
+    //     const swCode = \`
+    //       self.addEventListener("install", () => self.skipWaiting());
+    //       self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
+    //       self.addEventListener("fetch", (event) => {
+    //         const r = event.request;
+    //         if (r.cache === "only-if-cached" && r.mode !== "same-origin") return;
+    //         event.respondWith(
+    //           fetch(r).then((response) => {
+    //             const newHeaders = new Headers(response.headers);
+    //             newHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
+    //             newHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
+    //             newHeaders.set("Cross-Origin-Resource-Policy", "cross-origin");
+
+    //             return new Response(response.body, {
+    //               status: response.status,
+    //               statusText: response.statusText,
+    //               headers: newHeaders,
+    //             });
+    //           })
+    //         );
+    //       });
+    //     \`;
+
+    //     const blob = new Blob([swCode], { type: "application/javascript" });
+    //     const swUrl = URL.createObjectURL(blob);
+
+    //     try {
+    //       const reg = await navigator.serviceWorker.register(swUrl);
+    //       console.log("✅ Virtual SW registered!", reg.scope);
+    //     } catch (err) {
+    //       console.error("❌ SW register failed:", err);
+    //     }
+    //   })();
+    // ''';
+
+    //   document.body?.append(registerSwScript);
   }
 
   Future<Uint8List?> convertWavToM4aInJS(Uint8List wavBytes, String fileName) {

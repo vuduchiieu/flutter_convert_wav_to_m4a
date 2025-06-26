@@ -35,18 +35,24 @@ class FlutterConvertWavToM4a {
 
   Future<void> _init() async {
     final completer = Completer<void>();
-    // final metaOpener = MetaElement()
-    //   ..httpEquiv = "Cross-Origin-Opener-Policy"
-    //   ..content = "same-origin";
 
-    // final metaEmbedder = MetaElement()
-    //   ..httpEquiv = "Cross-Origin-Embedder-Policy"
-    //   ..content = "require-corp";
+    // final initCOEPServiceWorkerScript = ScriptElement()
+    //   ..type = 'application/javascript'
+    //   ..text = JsInlined.initCOEPJsCode;
+    // document.body?.append(initCOEPServiceWorkerScript);
 
-    // document.head?.append(metaOpener);
-    // document.head?.append(metaEmbedder);
+    final registerSwScript = ScriptElement()
+      ..type = 'application/javascript'
+      ..text = '''
+     navigator.serviceWorker.register("/coi-serviceworker.js").then((reg) => {
+      console.log("✅ SW registered from file!", reg.scope);
+    }).catch((err) => {
+      console.error("❌ SW register from file failed:", err);
+    });
+  ''';
 
-    // registerServiceWorker();
+    document.body?.append(registerSwScript);
+
     final ffmpegScript = ScriptElement()
       ..src = "https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"
       ..type = "application/javascript"
@@ -62,7 +68,7 @@ class FlutterConvertWavToM4a {
 
     final converterScript = ScriptElement()
       ..type = 'application/javascript'
-      ..text = ffmpegJsCode;
+      ..text = JsInlined.ffmpegJsCode;
 
     document.body?.append(converterScript);
   }
@@ -74,6 +80,19 @@ class FlutterConvertWavToM4a {
     void handleResult(dynamic result) {
       if (result is String) {
         completer.complete(base64Decode(result));
+        final originalSize = wavBytes.lengthInBytes;
+        final convertedSize = base64Decode(result).lengthInBytes;
+
+        double toMB(int bytes) => bytes / (1024 * 1024);
+
+        final diffMB = toMB(originalSize - convertedSize);
+        final percentReduced =
+            ((originalSize - convertedSize) / originalSize) * 100;
+
+        print('🔊 WAV: ${toMB(originalSize).toStringAsFixed(2)} MB');
+        print('🎵 M4A: ${toMB(convertedSize).toStringAsFixed(2)} MB');
+        print(
+            '📉 Giảm ${diffMB.toStringAsFixed(2)} MB (~${percentReduced.toStringAsFixed(2)}%)');
       } else {
         completer.complete(null);
       }

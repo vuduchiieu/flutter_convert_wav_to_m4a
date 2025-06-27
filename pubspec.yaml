@@ -1,6 +1,6 @@
 name: flutter_convert_wav_to_m4a
 description: Convert WAV to M4A using FFmpeg WASM in Flutter Web
-version: 0.0.3
+version: 0.0.5
 homepage: https://github.com/vuduchiieu/flutter_convert_wav_to_m4a
 repository: https://github.com/vuduchiieu/flutter_convert_wav_to_m4a
 issue_tracker: https://github.com/vuduchiieu/flutter_convert_wav_to_m4a/issues
@@ -16,6 +16,7 @@ dependencies:
     sdk: flutter
   web: ^1.0.0
   plugin_platform_interface: ^2.0.2
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -23,9 +24,13 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  assets:
+    - coi-serviceworker.js
+
   plugin:
     platforms:
       web:
         pluginClass: FlutterConvertWavToM4aWeb
         fileName: flutter_convert_wav_to_m4a_web.dart
 #flutter pub publish
+#http-server build/web -S -C localhost.pem -K localhost-key.pem -p 443
